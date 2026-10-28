@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aeolus Renewables - Drivetrain Fault Detection Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #1a5276 0%, #2e86c1 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        .metadata {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #1a5276;
+            border-bottom: 3px solid #2e86c1;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        h3 {
+            color: #2e86c1;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .objective {
+            background: #eaf2f8;
+            padding: 20px;
+            border-left: 5px solid #2e86c1;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .highlight-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 5px solid #2e86c1;
+        }
+        .highlight-card h4 {
+            color: #1a5276;
+            margin-bottom: 8px;
+        }
+        .highlight-card .value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        th {
+            background: #1a5276;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+        .insight-block {
+            background: #eaf2f8;
+            padding: 15px;
+            border-left: 4px solid #2e86c1;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .insight-block strong {
+            color: #1a5276;
+        }
+        .warning-block {
+            background: #fef9e7;
+            padding: 15px;
+            border-left: 4px solid #f39c12;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .warning-block strong {
+            color: #d35400;
+        }
+        .success-block {
+            background: #eafaf1;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .success-block strong {
+            color: #1e8449;
+        }
+        .key-metric {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2e86c1;
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 5px solid #2e86c1;
+        }
+        .feature-card h3 {
+            color: #1a5276;
+            margin-top: 0;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .rec-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-top: 4px solid #2e86c1;
+        }
+        .rec-card h4 {
+            color: #1a5276;
+            margin-bottom: 10px;
+        }
+        .rec-card ul {
+            margin-left: 18px;
+        }
+        .rec-card li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Drivetrain Fault Detection Report</h1>
+            <p>Aeolus Renewables — Proof-of-Concept Predictive Maintenance Classifier</p>
+        </header>
+
+        <div class="metadata">
+            <strong>Report Generated:</strong> July 18, 2026 | 
+            <strong>Fleet Size:</strong> 1,150 turbines (2.5 MW class) |
+            <strong>Data:</strong> 15 turbines, 10-min SCADA intervals |
+            <strong>Primary Metric:</strong> Recall (fault detection rate)
+        </div>
+
+        <!-- OBJECTIVE SECTION -->
+        <section>
+            <h2>📋 Business Objective</h2>
+            <div class="objective">
+                <p><strong>Goal:</strong> Build a drivetrain-condition classifier that reads each turbine's live SCADA sensor signature and labels it as "fault" or "normal" — enabling control-room analysts to focus on genuinely degrading machines rather than scanning the entire fleet manually.</p>
+                <p style="margin-top: 10px;"><strong>Outcome:</strong> ✅ A <span class="key-metric">Tuned XGBoost classifier</span> trained on 30+ sensor channels that detects drivetrain faults with high recall, catching failures before they cascade into catastrophic gearbox destruction.</p>
+            </div>
+            <div class="warning-block">
+                <strong>⚠️ Why Recall Matters:</strong> A missed fault (false negative) costs 7–21 days of lost energy revenue plus emergency crane mobilisation. A false alert (false positive) costs only a routine inspection. The model is deliberately tuned to favour catching true failures over avoiding unnecessary inspections.
+            </div>
+        </section>
+
+        <!-- KEY FINDINGS -->
+        <section>
+            <h2>📊 Key EDA Findings</h2>
+            <div class="highlights">
+                <div class="highlight-card">
+                    <h4>Fleet Coverage</h4>
+                    <div class="value">15 Turbines</div>
+                    <p style="font-size: 0.9em; color: #666;">~130K SCADA records analyzed</p>
+                </div>
+                <div class="highlight-card">
+                    <h4>Class Imbalance</h4>
+                    <div class="value">~5-8% Failure Rate</div>
+                    <p style="font-size: 0.9em; color: #666;">Realistic real-world imbalance</p>
+                </div>
+                <div class="highlight-card">
+                    <h4>Sensor Channels</h4>
+                    <div class="value">30+ Features</div>
+                    <p style="font-size: 0.9em; color: #666;">Thermal, vibration, operational, lifecycle</p>
+                </div>
+                <div class="highlight-card">
+                    <h4>Missing Data</h4>
+                    <div class="value">3 Features</div>
+                    <p style="font-size: 0.9em; color: #666;">Imputed with median from training set</p>
+                </div>
+            </div>
+
+            <h3>Strongest Fault Indicators (Correlation with Failure):</h3>
+            <div class="insight-block">
+                <strong>🔧 Vibration Signatures:</strong> Drivetrain vibration RMS, bearing BPFO/BPFI frequencies, gearmesh amplitude, and sideband energy all show strong positive correlation with failure — confirming that FFT-based vibration features are the primary fault fingerprint.
+            </div>
+            <div class="insight-block">
+                <strong>🌡️ Thermal Escalation:</strong> Gearbox bearing temperature, gearbox oil temperature, and main bearing temperature are elevated in fault conditions, indicating friction-driven heat buildup as degradation progresses.
+            </div>
+            <div class="insight-block">
+                <strong>🛢️ Oil Contamination:</strong> Oil particle count is significantly higher in fault-state turbines, directly reflecting metallic debris from worn bearings and gears accumulating in the lubrication system.
+            </div>
+            <div class="insight-block">
+                <strong>📉 Power Output Drop:</strong> Faulty drivetrains show reduced power output at equivalent wind speeds, consistent with increased mechanical drag from degraded components.
+            </div>
+            <div class="insight-block">
+                <strong>📋 Maintenance History:</strong> Turbines with higher prior fault counts and longer hours since last maintenance show elevated failure rates — indicating that chronic issues and maintenance gaps compound risk.
+            </div>
+        </section>
+
+        <!-- MODEL RESULTS -->
+        <section>
+            <h2>🤖 Model Performance Summary</h2>
+            <h3>Baseline Model Comparison</h3>
+            <table>
+                <tr>
+                    <th>Model</th>
+                    <th>Accuracy</th>
+                    <th>Recall</th>
+                    <th>Precision</th>
+                    <th>F1 Score</th>
+                </tr>
+                <tr>
+                    <td>Decision Tree</td>
+                    <td>High (overfits)</td>
+                    <td>High</td>
+                    <td>Moderate</td>
+                    <td>Moderate-High</td>
+                </tr>
+                <tr>
+                    <td>Random Forest</td>
+                    <td>High</td>
+                    <td>High</td>
+                    <td>High</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td>Gradient Boosting</td>
+                    <td>High</td>
+                    <td>Moderate</td>
+                    <td>High</td>
+                    <td>High</td>
+                </tr>
+                <tr>
+                    <td><strong>XGBoost</strong></td>
+                    <td><strong>High</strong></td>
+                    <td><strong>High</strong></td>
+                    <td><strong>High</strong></td>
+                    <td><strong>High</strong></td>
+                </tr>
+                <tr>
+                    <td>ANN (Baseline)</td>
+                    <td>Moderate-High</td>
+                    <td>Moderate</td>
+                    <td>Moderate</td>
+                    <td>Moderate</td>
+                </tr>
+            </table>
+
+            <h3>Final Model: Tuned XGBoost</h3>
+            <div class="success-block">
+                <strong>✅ Selected Model:</strong> Tuned XGBoost with scale_pos_weight for class imbalance and hyperparameters optimized via 5-fold cross-validated RandomizedSearchCV scoring on Recall.
+            </div>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Description</th>
+                    <th>Business Implication</th>
+                </tr>
+                <tr>
+                    <td><strong>Recall (Sensitivity)</strong></td>
+                    <td>Proportion of actual faults correctly detected</td>
+                    <td>High recall = fewer missed faults = fewer catastrophic failures</td>
+                </tr>
+                <tr>
+                    <td><strong>Precision</strong></td>
+                    <td>Proportion of fault alerts that are genuine</td>
+                    <td>Higher precision = fewer unnecessary inspections dispatched</td>
+                </tr>
+                <tr>
+                    <td><strong>F1 Score</strong></td>
+                    <td>Harmonic mean of precision and recall</td>
+                    <td>Balanced measure of detection quality</td>
+                </tr>
+                <tr>
+                    <td><strong>Accuracy</strong></td>
+                    <td>Overall correct predictions</td>
+                    <td>Less meaningful given class imbalance — a naive model predicting "normal" achieves ~93% accuracy</td>
+                </tr>
+            </table>
+
+            <h3>Why XGBoost Was Selected:</h3>
+            <ul style="margin-left: 20px; line-height: 2;">
+                <li>Best recall on the validation set — catches the most actual faults</li>
+                <li>Strong generalization — minimal gap between training and validation performance</li>
+                <li>Native handling of class imbalance via <code>scale_pos_weight</code></li>
+                <li>Built-in feature importance for interpretability</li>
+                <li>Robust to missing values and outliers in sensor data</li>
+                <li>Fast inference — compatible with real-time SCADA scoring at 10-minute intervals</li>
+            </ul>
+        </section>
+
+        <!-- FEATURE IMPORTANCE -->
+        <section>
+            <h2>🔑 Top Predictive Features</h2>
+            <p>The tuned XGBoost model identifies these as the strongest signals for drivetrain fault detection:</p>
+
+            <div class="feature-card">
+                <h3>Tier 1 — Primary Fault Indicators</h3>
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Category</th>
+                        <th>Why It Matters</th>
+                    </tr>
+                    <tr>
+                        <td><strong>drivetrain_vibration_rms_mmps</strong></td>
+                        <td>Vibration</td>
+                        <td>Overall mechanical roughness — the most direct single indicator of drivetrain health</td>
+                    </tr>
+                    <tr>
+                        <td><strong>vib_fft_bearing_bpfo</strong></td>
+                        <td>Vibration (FFT)</td>
+                        <td>Outer-race bearing defect frequency — isolates specific pitting damage</td>
+                    </tr>
+                    <tr>
+                        <td><strong>vib_fft_bearing_bpfi</strong></td>
+                        <td>Vibration (FFT)</td>
+                        <td>Inner-race bearing defect frequency — tracks inner-ring degradation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>oil_particle_count</strong></td>
+                        <td>Lubrication</td>
+                        <td>Metallic debris in oil — direct evidence of material wear</td>
+                    </tr>
+                    <tr>
+                        <td><strong>gearbox_bearing_temp_C</strong></td>
+                        <td>Thermal</td>
+                        <td>Bearing temperature rise from friction — a leading thermal indicator</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="feature-card">
+                <h3>Tier 2 — Supporting Signals</h3>
+                <table>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Category</th>
+                        <th>Why It Matters</th>
+                    </tr>
+                    <tr>
+                        <td><strong>vib_fft_gearmesh</strong></td>
+                        <td>Vibration (FFT)</td>
+                        <td>Gear teeth meshing frequency — detects tooth wear or misalignment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>vib_fft_sideband</strong></td>
+                        <td>Vibration (FFT)</td>
+                        <td>Sideband energy around main frequencies — flags cracked gear teeth</td>
+                    </tr>
+                    <tr>
+                        <td><strong>gearbox_oil_temp_C</strong></td>
+                        <td>Thermal</td>
+                        <td>Lubricant temperature — elevated values indicate excessive friction</td>
+                    </tr>
+                    <tr>
+                        <td><strong>prior_fault_count</strong></td>
+                        <td>History</td>
+                        <td>Chronic fault history — turbines with past issues are more likely to fail again</td>
+                    </tr>
+                    <tr>
+                        <td><strong>hours_since_last_maintenance</strong></td>
+                        <td>History</td>
+                        <td>Maintenance gap — longer intervals increase degradation risk</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- BUSINESS INSIGHTS -->
+        <section>
+            <h2>💡 Business Insights</h2>
+
+            <div class="insight-block">
+                <strong>1. Vibration FFT features are the dominant fault signature.</strong> The model relies most heavily on frequency-domain vibration channels (BPFO, BPFI, gearmesh, sideband) — confirming that condition-based monitoring centered on spectral vibration analysis is scientifically justified for this fleet.
+            </div>
+
+            <div class="insight-block">
+                <strong>2. Multi-channel fusion outperforms single-threshold alarms.</strong> No single sensor channel can reliably distinguish fault from normal. The model's power comes from combining subtle, correlated shifts across vibration, thermal, lubrication, and operational channels simultaneously — exactly the pattern human analysts miss.
+            </div>
+
+            <div class="insight-block">
+                <strong>3. Oil contamination is an early and reliable physical marker.</strong> Oil particle count ranks among the top features. Unlike vibration (which can be masked by wind noise), oil debris is a cumulative, irreversible signal that grows monotonically as bearings degrade.
+            </div>
+
+            <div class="insight-block">
+                <strong>4. Maintenance history adds predictive value beyond sensor data.</strong> Prior fault count and hours since last maintenance improve detection — turbines with chronic issues or extended service gaps carry elevated baseline risk regardless of instantaneous sensor readings.
+            </div>
+
+            <div class="insight-block">
+                <strong>5. Failure rate is relatively uniform across hours and days.</strong> No strong time-of-day or day-of-week pattern was found, indicating that failures are mechanically driven (by load cycles and component age) rather than operationally driven by scheduling or human factors.
+            </div>
+
+            <div class="insight-block">
+                <strong>6. The model generalizes across the temporal split.</strong> Training on the first 70% of the timeline and testing on the final 15% confirms the classifier detects degradation patterns that persist into the future — a necessary condition for real-time deployment.
+            </div>
+        </section>
+
+        <!-- RECOMMENDATIONS -->
+        <section>
+            <h2>🎯 Recommendations</h2>
+
+            <div class="rec-grid">
+                <div class="rec-card">
+                    <h4>🚀 Immediate Deployment (0–3 months)</h4>
+                    <ul>
+                        <li>Deploy the tuned XGBoost model as a scoring service that runs on each turbine's 10-minute SCADA feed and surfaces a fault probability to the control-room dashboard</li>
+                        <li>Set an initial alert threshold (e.g., probability > 0.5) and route flagged turbines to a priority inspection queue for field technicians</li>
+                        <li>Instrument model predictions alongside actual outcomes to build a live validation dataset from Day 1</li>
+                    </ul>
+                </div>
+
+                <div class="rec-card">
+                    <h4>🔧 Maintenance Process Changes (3–6 months)</h4>
+                    <ul>
+                        <li>Shift from fixed-interval gearbox inspections to condition-triggered work orders for turbines the model flags — reducing unnecessary inspections on healthy machines</li>
+                        <li>Pre-position crane and bearing inventory based on model alerts to convert unplanned emergency replacements into scheduled repairs at 30–50% lower cost</li>
+                        <li>Prioritize oil sampling and vibration spot-checks on turbines with rising fault probability (0.3–0.5 range) to validate model signals before full alert</li>
+                    </ul>
+                </div>
+
+                <div class="rec-card">
+                    <h4>📈 Model Improvement (6–12 months)</h4>
+                    <ul>
+                        <li>Expand training data to all 1,150 turbines to capture fleet-wide variability and rare failure modes not represented in the 15-turbine pilot</li>
+                        <li>Incorporate lead-time prediction — extend the classifier into a time-to-failure regressor so maintenance can be scheduled optimally within the remaining useful life window</li>
+                        <li>Add rolling-window features (e.g., 24h vibration trend, 7-day oil particle slope) to capture degradation velocity, not just instantaneous state</li>
+                    </ul>
+                </div>
+
+                <div class="rec-card">
+                    <h4>📊 Monitoring & Governance</h4>
+                    <ul>
+                        <li>Track model drift monthly — compare predicted vs actual failure rates; retrain quarterly with fresh SCADA data to maintain detection accuracy</li>
+                        <li>Establish a feedback loop where technicians record root-cause findings on every inspected alert (true positive vs false positive) to continuously improve precision</li>
+                        <li>Report monthly KPIs: unplanned downtime days avoided, energy revenue protected, and mean detection lead-time (how many days before catastrophic failure the model alerted)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ECONOMIC IMPACT -->
+        <section>
+            <h2>💰 Estimated Economic Impact</h2>
+            <div class="highlights">
+                <div class="highlight-card">
+                    <h4>Avoided Downtime</h4>
+                    <div class="value">7–21 days/event</div>
+                    <p style="font-size: 0.9em; color: #666;">Each prevented unplanned failure saves this lost production window</p>
+                </div>
+                <div class="highlight-card">
+                    <h4>Revenue Protected</h4>
+                    <div class="value">~$40K–$120K/event</div>
+                    <p style="font-size: 0.9em; color: #666;">Energy sales preserved per avoided unplanned outage (2.5 MW turbine)</p>
+                </div>
+                <div class="highlight-card">
+                    <h4>Repair Cost Reduction</h4>
+                    <div class="value">30–50%</div>
+                    <p style="font-size: 0.9em; color: #666;">Scheduled vs emergency gearbox replacement cost savings</p>
+                </div>
+                <div class="highlight-card">
+                    <h4>Cascade Prevention</h4>
+                    <div class="value">Critical</div>
+                    <p style="font-size: 0.9em; color: #666;">Catching bearing faults before they destroy the gearbox avoids 2–3x cost escalation</p>
+                </div>
+            </div>
+
+            <div class="success-block">
+                <strong>📊 Fleet-Scale Projection:</strong> If the model prevents even 5–10 unplanned drivetrain failures per year across the 1,150-turbine fleet (conservative given historical failure rates), the annual value in protected revenue and avoided emergency costs is estimated at $500K–$2M+, far exceeding deployment cost.
+            </div>
+        </section>
+
+        <!-- SUMMARY -->
+        <section>
+            <h2>✨ Summary</h2>
+            <ul style="margin-left: 20px; line-height: 2;">
+                <li><strong>Problem Solved:</strong> Replaced reactive threshold alarms with a multi-channel machine learning classifier that detects drivetrain faults before catastrophic failure.</li>
+                <li><strong>Model:</strong> Tuned XGBoost with balanced class weights, optimized for recall via 5-fold CV RandomizedSearchCV across 9 hyperparameters.</li>
+                <li><strong>Validation:</strong> Temporal train/test split preserves real-world deployment conditions — no future-leakage.</li>
+                <li><strong>Top Features:</strong> Vibration FFT signatures (BPFO, BPFI, gearmesh), oil particle count, and gearbox bearing temperature dominate predictions.</li>
+                <li><strong>Business Value:</strong> Enables the shift from reactive repair to condition-based maintenance — reducing unplanned downtime, protecting energy revenue, and containing repair costs before they escalate.</li>
+                <li><strong>Next Step:</strong> Deploy as a real-time scoring service on the fleet SCADA system, with human-in-the-loop validation during the first 3 months.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Generated by Aeolus Renewables Analytics | Drivetrain Fault Detection PoC | AIML Project 1 | July 2026</p>
+        </footer>
+    </div>
+</body>
+</html>
