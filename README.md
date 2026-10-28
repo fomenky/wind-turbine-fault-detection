@@ -4,8 +4,11 @@
 
 ### 📊 [**View the Project Report →**](https://fomenky.github.io/wind-turbine-fault-detection/)
 
-The rendered report (with all charts, tables, and findings) is published via GitHub Pages at the link above — no download or setup required.
-A direct copy of the report HTML also lives in [`reports/`](reports/wind_turbine_fault_detection_full_report.html), with a condensed [executive summary](reports/executive_summary.html).
+Published via GitHub Pages — no download or setup required. The landing page is a clean **executive summary**; it links through to the **full detailed report** (every chart, the model-comparison tables, and the complete analysis). Direct links:
+
+- **Executive summary (Pages landing page):** https://fomenky.github.io/wind-turbine-fault-detection/
+- **Full detailed report:** https://fomenky.github.io/wind-turbine-fault-detection/reports/wind_turbine_fault_detection_full_report.html
+- Source copies: [`reports/executive_summary.html`](reports/executive_summary.html) · [`reports/wind_turbine_fault_detection_full_report.html`](reports/wind_turbine_fault_detection_full_report.html)
 
 ---
 
@@ -51,7 +54,7 @@ Because a **missed fault** (false negative) costs 7–21 days of lost revenue pl
   - **Power-output drop** at equivalent wind speed, consistent with mechanical drag.
   - **Maintenance history** — higher prior fault counts and longer gaps since service compound risk.
 
-See the [report](https://fomenky.github.io/wind-turbine-fault-detection/) for the full model-comparison table, metrics, and visualizations.
+See the [full report](https://fomenky.github.io/wind-turbine-fault-detection/reports/wind_turbine_fault_detection_full_report.html) for the complete model-comparison table, metrics, and visualizations.
 
 ## Interpretation
 
@@ -92,15 +95,16 @@ The notebook loads `data/wind_turbine_detection.csv` with a relative path, so it
 ```text
 wind-turbine-fault-detection/
 ├── README.md
-├── index.html                 # Report published via GitHub Pages (same as full report)
+├── index.html                 # GitHub Pages landing page (clean executive summary → links to full report)
 ├── notebooks/
-│   └── wind_turbine_fault_detection.ipynb
+│   └── wind_turbine_fault_detection.ipynb              # Full Python analysis & modeling
 ├── reports/
-│   ├── wind_turbine_fault_detection_full_report.html   # Full rendered analysis + charts
+│   ├── wind_turbine_fault_detection_full_report.html   # Full rendered analysis + all charts
 │   └── executive_summary.html                          # Condensed business-facing summary
 ├── data/
 │   └── wind_turbine_detection.csv
 ├── requirements.txt
+├── .gitattributes             # Language-bar: count notebook, exclude generated HTML
 └── .gitignore
 ```
 
