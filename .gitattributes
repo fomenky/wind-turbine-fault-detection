@@ -1,11 +1,13 @@
 # Language-bar classification (GitHub Linguist)
-# The HTML reports are generated artifacts exported from the Jupyter notebook,
-# not hand-written source. Exclude them so the language bar reflects the actual
-# work (Python / Jupyter Notebook) rather than the large generated HTML export.
+#
+# The full report under reports/ is a generated artifact exported from the
+# Jupyter notebook (a single ~2 MB auto-generated HTML file), so it is excluded
+# from the language stats — it would otherwise dominate the bar and misrepresent
+# the work. The hand-written executive summary (index.html, real HTML/CSS) and
+# the notebook ARE counted, so the language bar reflects Jupyter Notebook + HTML.
 
 reports/*.html linguist-generated=true
-index.html     linguist-documentation=true
 
-# Ensure the notebook is counted toward language stats.
+# Count the notebook and the hand-authored summary page.
 *.ipynb linguist-detectable=true
-*.ipynb linguist-language=Jupyter\ Notebook
+index.html linguist-detectable=true
